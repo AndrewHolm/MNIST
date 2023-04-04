@@ -92,4 +92,41 @@ void setup() {
 
     // Draw a vertical line in the center of the image
     int x = IMAGE_SIZE / 2;
-    for (int y = 0; y < IMAGE
+    for (int y = 0;y < IMAGE_SIZE; y++) {
+        test_image[y][x] = 255;
+    }
+
+    // Flatten the image
+    for (int i = 0; i < IMAGE_SIZE; i++) {
+        for (int j = 0; j < IMAGE_SIZE; j++) {
+            flat_image[i * IMAGE_SIZE + j] = test_image[i][j];
+        }
+    }
+
+  // Copy the test image to the input tensor
+  for (int i = 0; i < kNumPixels; i++) {
+    tflu_i_tensor->data.f[i] = flat_image[i] / 255.0;
+  }
+
+
+}
+void loop(){
+  // Run inference on the input tensor
+  interpreter->Invoke();
+
+  // Print the output (the predicted digit)
+  float max_prob = 0.0;
+  int max_index = 0;
+  for (int i = 0; i < kNumClasses; i++) {
+    float prob = tflu_o_tensor->data.f[i];
+    if (prob > max_prob) {
+      max_prob = prob;
+      max_index = i;
+    }
+    Serial.print("Class ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.println(prob);
+  }
+  delay(100000000);
+}
