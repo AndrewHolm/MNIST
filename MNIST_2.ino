@@ -14,10 +14,11 @@
 //-----------------------------------------------------------------------------
 
 // Model parsed by the TFLu parser
-const tflite::Model* model = nullptr;
+std::unique_ptr<tflite::Model> model;
 
 // The pointer to the interpreter
-tflite::MicroInterpreter* interpreter = nullptr; 
+std::unique_ptr<tflite::MicroInterpreter> interpreter;
+
 tflite::MicroErrorReporter micro_error_reporter;
 tflite::ErrorReporter* error_reporter = &micro_error_reporter;
 
@@ -52,14 +53,14 @@ void setup() {
   while (!Serial);
 
   //load the TFLite model from the C-byte array
-model = tflite::GetModel(model_tflite);
+  model = std::unique_ptr<tflite::Model>(tflite::GetModel(model_tflite));
 
-// make sure model schema version is compatible (from tflite website)
-if (model->version() != TFLITE_SCHEMA_VERSION) {
-  TF_LITE_REPORT_ERROR(error_reporter,
-  "Model provided is schema version %d not equal not equal to supported version "
-  "  %d. \n", model->version(), TFLITE_SCHEMA_VERSION);  
-}
+  // make sure model schema version is compatible (from tflite website)
+  if (model->version() != TFLITE_SCHEMA_VERSION) {
+    TF_LITE_REPORT_ERROR(error_reporter,
+    "Model provided is schema version %d not equal not equal to supported version "
+    "  %d. \n", model->version(), TFLITE_SCHEMA_VERSION);  
+  }
 
   // Initialize BLE
   if (!BLE.begin()) {
@@ -70,8 +71,7 @@ if (model->version() != TFLITE_SCHEMA_VERSION) {
 
 
   // Initialize TensorFlow Lite
-  static tflite::MicroInterpreter static_interpreter(model, resolver, tensor_arena, kTensorArenaSize); //, error_reporter
-  interpreter = &static_interpreter;
+  interpreter = std::unique_ptr<tflite::MicroInterpreter>(new tflite::MicroInterpreter(model.get(), resolver, tensor_arena, kTensorArenaSize));
 
 
   // Allocate memory for the model's input and output tensors
@@ -92,7 +92,7 @@ if (model->version() != TFLITE_SCHEMA_VERSION) {
 
     // Draw a vertical line in the center of the image
     int x = IMAGE_SIZE / 2;
-    for (int y = 0; y < IMAGE_SIZE; y++) {
+    for (int y = 0;y < IMAGE_SIZE; y++) {
         test_image[y][x] = 255;
     }
 
@@ -130,4 +130,3 @@ void loop(){
   }
   delay(100000000);
 }
-
