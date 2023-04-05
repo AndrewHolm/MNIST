@@ -13,3 +13,10 @@ Made it so that it is required that there exists a pull request before merging. 
 [Link to CodeQL Implementation](https://github.com/AndrewHolm/MNIST/tree/main/.github/workflows)
 
 [link to CodeQl analysis](https://github.com/AndrewHolm/MNIST/actions/workflows/codeql.yml)
+
+
+# Future fixes 
+* Encryption of header file to ensure security and privacy of weights and biases being stores. 
+* Add password protection on google colab when accessing resources from github.
+* Enxription of classification result data
+* limiting output to serial moniter and writing directly to a file 
