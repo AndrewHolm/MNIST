@@ -8,4 +8,8 @@ The program can potentially dereference a null pointer, thereby raising a NullPo
 
 ## #002 GitHub Changes
 
-Made it so that it is required that there exists a pull request before merging. This ensures that no code will be merger without the notification of the members of the repo. Further made it necessary for the pull request to be aproved before it can be completed. 
+Made it so that it is required that there exists a pull request before merging. This ensures that no code will be merger without the notification of the members of the repo. Further made it necessary for the pull request to be aproved before it can be completed. Implemented CodeQL to scan code for potential vulnerabilities.
+
+[Link to CodeQL Implementation](https://github.com/AndrewHolm/MNIST/tree/main/.github/workflows)
+
+[link to CodeQl analysis]()
