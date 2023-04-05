@@ -12,4 +12,4 @@ Made it so that it is required that there exists a pull request before merging. 
 
 [Link to CodeQL Implementation](https://github.com/AndrewHolm/MNIST/tree/main/.github/workflows)
 
-[link to CodeQl analysis]()
+[link to CodeQl analysis](https://github.com/AndrewHolm/MNIST/actions/workflows/codeql.yml)
