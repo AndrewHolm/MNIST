@@ -81,11 +81,17 @@ void setup() {
   tflu_i_tensor = interpreter->input(0);
   tflu_o_tensor = interpreter->output(0);
 
-  // Load a test image from SD card
+  
 
     const int IMAGE_SIZE = 28;
     int test_image[IMAGE_SIZE][IMAGE_SIZE];
     int flat_image[IMAGE_SIZE * IMAGE_SIZE];
+  
+    //test input array size to avoid buffer overflow
+    if (sizeof(test_image) != sizeof(int) * IMAGE_SIZE * IMAGE_SIZE) {
+      Serial.println("Input image size is not 28x28!");
+      return;
+    }
 
     // Set all pixels to 0
     memset(test_image, 0, sizeof(test_image));
