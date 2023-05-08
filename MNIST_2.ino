@@ -37,8 +37,8 @@ const int kNumClasses = 10;
 //  allocation. Arena size is determined by model size through experiments.
 const int kTensorArenaSize = 20 * 1024;
 
-// allocation of memory 
-alignas(16) uint8_t tensor_arena[kTensorArenaSize];
+// allocation of memory dynamcically 
+uint8_t* tensor_arena = new uint8_t[kTensorArenaSize];
 
 //-----------------------------------------------------------------------------
 
@@ -55,11 +55,12 @@ void setup() {
   //load the TFLite model from the C-byte array
   model = std::unique_ptr<tflite::Model>(tflite::GetModel(model_tflite));
 
-  // make sure model schema version is compatible (from tflite website)
+  // make sure model schema version is compatible 
   if (model->version() != TFLITE_SCHEMA_VERSION) {
     TF_LITE_REPORT_ERROR(error_reporter,
     "Model provided is schema version %d not equal not equal to supported version "
-    "  %d. \n", model->version(), TFLITE_SCHEMA_VERSION);  
+    "  %d. \n", model->version(), TFLITE_SCHEMA_VERSION); 
+    exit(1);
   }
 
   // Initialize BLE
@@ -81,11 +82,17 @@ void setup() {
   tflu_i_tensor = interpreter->input(0);
   tflu_o_tensor = interpreter->output(0);
 
-  // Load a test image from SD card
+  
 
     const int IMAGE_SIZE = 28;
     int test_image[IMAGE_SIZE][IMAGE_SIZE];
     int flat_image[IMAGE_SIZE * IMAGE_SIZE];
+  
+    //test input array size to avoid buffer overflow
+    if (sizeof(test_image) != sizeof(int) * IMAGE_SIZE * IMAGE_SIZE) {
+      Serial.println("Input image size is not 28x28!");
+      exit(1);
+    }
 
     // Set all pixels to 0
     memset(test_image, 0, sizeof(test_image));
@@ -113,6 +120,9 @@ void setup() {
 void loop(){
   // Run inference on the input tensor
   interpreter->Invoke();
+  
+  // delete dynamically allocated tensor arena. 
+  delete[] tensor_arena;
 
   // Print the output (the predicted digit)
   float max_prob = 0.0;
