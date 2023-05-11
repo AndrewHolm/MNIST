@@ -1,5 +1,5 @@
 # Description 
-- This code was used for a security prject and not as functioning code to display image classification. To see the functioning MNIST image classification click 
+- This code was used for a security prject and not as functioning code for image classification. To see the functioning MNIST image classification click [Here](https://github.com/AndrewHolm/mnist-arduino-tflite).
 - The purpose of the project was to point out vulnerabilities and weaknesses in the code and fix them. 
 
 # MNIST
